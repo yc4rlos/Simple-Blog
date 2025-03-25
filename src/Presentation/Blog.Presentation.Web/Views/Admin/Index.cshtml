@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Admin";
+}
+<div class="mt-4 row row-cols-4 gap-3 cards">
+    <a class="col bg-dark rounded shadow-lg p-4 text-center text-decoration-none text-light"
+       asp-action="GetPosts">
+        <span>Posts</span>
+    </a>
+    <a class="col bg-dark rounded shadow-lg p-4 text-center text-decoration-none text-light"
+       asp-action="GetTags">
+        <span>Tags</span>
+    </a>
+    <a class="col bg-dark rounded shadow-lg p-4 text-center text-decoration-none text-light"
+       asp-action="GetUsers">
+        <span>Users</span>
+    </a>
+</div>

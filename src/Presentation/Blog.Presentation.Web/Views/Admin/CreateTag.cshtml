@@ -1,0 +1,102 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Blog.Presentation.Web.ViewModels.Admin.CreateTagViewModel
+@{
+    var isCreating = Model.Tag == null;
+    var pageTitleText = (isCreating ? "Create new" : "Update") + " Tag";
+    var buttonSubmitText = isCreating ? "Register" : "Update";
+
+    ViewData["Title"] = pageTitleText;
+}
+
+<h3 class="mt-4">@pageTitleText</h3>
+<form>
+    <div class="row mb-3 row-cols-2">
+        <div>
+            <label for="image-input" class="form-label">
+                Image
+                <span class="text-danger">*</span>
+            </label>
+            <input id="image-input" class="form-control" type="file" accept="image/*"/>
+            <span id="image-required-error" class="text-danger d-none">Input image is required</span>
+        </div>
+        <div id="image-preview">
+            @if (Model.Tag?.ImageFileName != null)
+            {
+                <img alt="tag image"
+                     class="img-thumbnail"
+                     src="@Url.ActionLink("Index", "File")/@Model.Tag.ImageFileName"/>
+            }
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="name-input" class="form-label"> Name <span class="text-danger">*</span></label>
+        <input id="name-input"
+               value="@Model.Tag?.Name"
+               class="form-control"
+               required
+               placeholder="Type the post title"/>
+        <span id="name-required-error" class="text-danger d-none">Name is required</span>
+    </div>
+    <div>
+        <button id="register-button" class="btn btn-success" type="button">@buttonSubmitText</button>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script>
+        const isCreating = @isCreating.ToString().ToLower();
+
+        addImagePreviewEventListener('image-input', 'image-preview');
+
+        //#region Register
+        function validateForm() {
+            let valid = true;
+
+            if (isCreating) {
+                // Validates Image
+                valid = validateImageFormField('image-input', 'image-required-error', valid);
+            }
+
+            // Validates Name
+            valid = ValidateFormField('name-input', 'name-required-error', valid);
+
+            return valid;
+        }
+
+        document.getElementById('register-button').addEventListener('click', function () {
+            const valid = validateForm();
+            if (!valid) return;
+
+            const formData = new FormData();
+
+            if (!isCreating) {
+                formData.append('id', @Model.Tag?.Id);
+            }
+            
+            formData.append('name', document.getElementById('name-input').value);
+            formData.append('image', document.getElementById('image-input').files[0] ?? '');
+
+            let url;
+
+            if (isCreating) {
+                url = '@Url.ActionLink("CreateTag")';
+            } else {
+                url = '@Url.ActionLink("UpdateTag")';
+            }
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+                .then(handleError)
+                .then((response) => {
+                    if (!response.ok)
+                        return;
+
+                    window.location.href = '@Url.Action("GetTags")';
+                });
+        });
+        //#endregion
+    </script>
+}

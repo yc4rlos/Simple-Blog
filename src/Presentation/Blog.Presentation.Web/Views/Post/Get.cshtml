@@ -1,0 +1,61 @@
+@model Blog.Presentation.Web.ViewModels.Post.GetPostViewModel
+
+@{
+    ViewData["Title"] = Model.Post.Title;
+}
+
+<div class="mt-4">
+    <div class="px-5">
+        <h1>@Model.Post.Title</h1>
+        <div class="d-flex gap-1">
+            @foreach (var tag in Model.Post.Tags)
+            {
+                <a asp-action="Get" asp-controller="Tag" asp-route-slug="@tag.Slug"
+                   class="text-decoration-none bg-success py-1 px-2 text-light fw-bold">@tag.Name</a>
+            }
+        </div>
+
+        <h4 class="my-2">
+            @Model.Post.Summary
+        </h4>
+
+        <a href="@Url.ActionLink("Index", "Author")/yan-carlos" class="text-decoration-none my-3">
+            <div class="d-flex">
+                <img
+                    height="45px"
+                    width="45px"
+                    class="rounded-circle border border-white border-2 me-1"
+                    src="@Url.ActionLink("Index", "File")/@Model.Post.AuthorImageFileName"
+                    alt="author picture"/>
+                <div class="d-flex flex-column">
+                <span
+                    class="text-dark ">@Model.Post.AuthorName</span>
+                    <small class="text-secondary">@Model.Post.PostDate.ToString("MM/dd/yyyy")</small>
+                </div>
+            </div>
+        </a>
+
+        <div class="my-4">
+            <hr/>
+        </div>
+    </div>
+    <div class="px-5">
+        <img class="w-100 mb-5 "
+             height="300px"
+             alt="post image"
+             src="@Url.ActionLink("Index", "File")/@Model.Post.ImageFileName"/>
+        <div class="content">
+            @Html.Raw(Model.Post.Content)
+        </div>
+        @if (Model.RelatedPosts.Any())
+        {
+            <div class="mt-5">
+                <hr/>
+            </div>
+            <div>
+                <h3>Related posts:</h3>
+                @await Html.PartialAsync("_PostListPartial", Model.RelatedPosts)
+            </div>
+        }
+    </div>
+</div>

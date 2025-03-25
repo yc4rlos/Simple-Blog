@@ -1,0 +1,31 @@
+@model IEnumerable<Blog.Application.DTOs.Tag.TagDto>
+
+<div class="row g-2 mb-4 mt-3 row-cols-md-2 row-cols-lg-4">
+    @foreach (var tag in Model)
+    {
+        <div class="col">
+            <a asp-action="Get"
+               asp-controller="Tag"
+               asp-route-slug="@tag.Slug"
+               class="text-decoration-none">
+                <div class="tag-card shadow-lg d-flex align-items-center py-1 px-2 rounded gap-2">
+                    <div class="m-1">
+                        <img class="tag-image rounded-circle shadow-lg"
+                             src="@Url.ActionLink("Index", "File")/@tag.ImageFileName"
+                             alt="tag @tag.Name image"
+                             loading="lazy">
+                    </div>
+                    <div
+                        class="w-100 h-100 text-center d-flex flex-column justify-content-center align-items-center">
+                        <div class="fw-bold text-dark text-truncate tag-name"
+                             data-bs-toggle="tooltip"
+                             data-bs-title="@tag.Name">@tag.Name</div>
+                        <div class="text-secondary">
+                            <i class="bi bi-file-earmark-richtext"></i> <span>@tag.PostCount Posts</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>

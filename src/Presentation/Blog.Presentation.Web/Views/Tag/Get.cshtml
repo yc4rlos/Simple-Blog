@@ -1,0 +1,21 @@
+@model Blog.Presentation.Web.ViewModels.Tag.GetTagViewModel
+
+@{
+    ViewData["Title"] = Model.Tag.Name;
+}
+
+<div class="header-tag position-relative my-4">
+    <img id="header-tag"
+         alt="@Model.Tag.Name image"
+         class="w-100 bg-dark"
+         src="@Url.ActionLink("Index", "File")/@Model.Tag.ImageFileName"/>
+    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center">
+        <div class="bg-light bg-opacity-75 rounded px-3 py-1">
+            <h2 class="text-dark fw-bold">@Model.Tag.Name</h2>
+        </div>
+    </div>
+</div>
+<div class="px-4">
+    <hr/>
+</div>
+@await Html.PartialAsync("~/Views/Post/_PostListPartial.cshtml", Model.Posts)

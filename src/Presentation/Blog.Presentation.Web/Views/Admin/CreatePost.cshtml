@@ -1,0 +1,306 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Blog.Presentation.Web.ViewModels.Admin.CreatePostViewModel
+
+@{
+    var isCreating = Model.Post == null;
+    var submitButtonText = isCreating ? "Register" : "Update";
+    var pageTitleText = (isCreating ? "Create new" : "Edit") + " Post";
+    ViewData["Title"] = pageTitleText;
+}
+<div class="d-flex justify-content-between align-items-center">
+    <h2 class="mb-3 mt-4">@pageTitleText</h2>
+    <div>
+        <a asp-action="GetPosts" class="btn btn-outline-danger">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back
+        </a>
+    </div>
+</div>
+<form>
+    <div class="row mb-3">
+        <div class="col-6">
+            <label for="header-image-input" class="form-label">
+                Header Image
+                <span class="text-danger">*</span>
+            </label>
+            <input class="form-control" type="file" id="header-image-input" accept="image/*"/>
+            <small id="header-image-required-error" class="text-danger d-none">Image is required</small>
+        </div>
+        <div id="image-preview" class="col-6">
+            @if (Model.Post?.ImageFileName != null)
+            {
+                <img alt="Post image"
+                     class="img-thumbnail"
+                     src="@Url.ActionLink("Index", "File")/@Model.Post.ImageFileName"/>
+            }
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="title-input" class="form-label"> Title <span class="text-danger">*</span></label>
+        <input id="title-input"
+               class="form-control"
+               required
+               placeholder="Type the post title"
+               value="@Model.Post?.Title"/>
+        <small id="title-required-error" class="text-danger d-none">Title is required</small>
+    </div>
+    <label for="tag-select" class="form-label">Tags <span class="text-danger">*</span></label>
+    <div class="row mb-3 g-2 align-items-center">
+        <div class="col-10">
+            <select id="tag-select" class="form-select">
+                <option selected disabled>Select a tag</option>
+                @foreach (var tag in Model.Tags)
+                {
+                    <option id="tag-option-@tag.Id" value="@tag.Id">@tag.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-2">
+            <button id="add-tag-button" type="button" class="btn btn-info w-100">
+                <i class="bi bi-plus-circle me-1"></i>
+                Add tag
+            </button>
+        </div>
+        <small id="tags-required-error" class="text-danger d-none">Tag is required</small>
+    </div>
+    <div id="tag-list" class="row">
+        <!-- Tag List is rendered here -->
+    </div>
+
+    <div class="row row-cols-2 gy-2 mb-3">
+        <div class="col ">
+            <label for="summary-input" class="form-label">
+                Summary
+                <span class="text-danger">*</span>
+            </label>
+            <input id="summary-input"
+                   class="form-control"
+                   required
+                   placeholder="Type the summary"
+                   value="@Model.Post?.Summary"/>
+            <small id="summary-required-error" class="text-danger d-none">Summary is required</small>
+        </div>
+        <div class="col">
+            <label for="post-date-input" class="form-label"> Post Date <span class="text-danger">*</span></label>
+            <input id="post-date-input"
+                   class="form-control"
+                   required
+                   placeholder="Type the post title"
+                   type="date"
+                   value="@Model.Post?.PostDate.ToString("yyyy-MM-dd")"/>
+            <small id="post-date-required-error" class="d-none text-danger">The content is required</small>
+        </div>
+    </div>
+
+    <label class="form-label">Content <span class="text-danger">*</span></label>
+    <div id="toolbar-container" class="rounded-top-2">
+        <span class="ql-formats">
+            <select class="ql-font"></select>
+            <select class="ql-size"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
+            <button class="ql-strike"></button>
+        </span>
+        <span class="ql-formats">
+            <select class="ql-color"></select>
+            <select class="ql-background"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-script" value="sub"></button>
+            <button class="ql-script" value="super"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-header" value="1"></button>
+            <button class="ql-header" value="2"></button>
+            <button class="ql-blockquote"></button>
+            <button class="ql-code-block"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+            <button class="ql-indent" value="-1"></button>
+            <button class="ql-indent" value="+1"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-direction" value="rtl"></button>
+            <select class="ql-align"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-link"></button>
+            <button class="ql-image"></button>
+            <button class="ql-video"></button>
+            <button class="ql-formula"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-clean"></button>
+        </span>
+    </div>
+    <div class="mb-3">
+        <div id="editor" class="rounded-bottom-2">
+            @Html.Raw(Model.Post?.Content)
+        </div>
+        <small id="content-required-error" class="d-none text-danger">The content is required</small>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button id="register-button" type="button" class="btn btn-success">
+            @submitButtonText
+        </button>
+    </div>
+</form>
+
+
+@section Styles
+{
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script>
+        const isCreating = @isCreating.ToString().ToLower();
+
+        //#region Header Image
+        addImagePreviewEventListener('header-image-input', 'image-preview');
+        //#endregion
+        //#region Content
+        const quill = new Quill('#editor', {
+            modules: {
+                toolbar: '#toolbar-container',
+            },
+            placeholder: 'Type the post content',
+            theme: 'snow'
+        });
+        //#endregion
+        //#region Tags
+        const tagsSelected = @Html.Raw(Model.SlugsJsonString) || [];
+        renderTagList();
+
+        document.getElementById('add-tag-button').addEventListener('click', function () {
+            const tagSelectElement = document.getElementById('tag-select');
+            const tagSelectValue = tagSelectElement.value;
+            const tagSelectedName = document.getElementById('tag-option-' + tagSelectValue).text;
+
+            tagSelectElement.value = "";
+
+            if (!tagSelectValue || tagsSelected.find(x => x.value === tagSelectValue))
+                return;
+
+            tagsSelected.push({value: tagSelectValue, title: tagSelectedName});
+
+            renderTagList();
+        });
+
+        function onRemoveTag(value) {
+            const index = tagsSelected.findIndex(x => +x.value === +value);
+
+            if (index === -1)
+                return;
+
+            tagsSelected.splice(index, 1);
+            renderTagList();
+        }
+
+        function renderTagList() {
+            const tagList = document.getElementById('tag-list');
+
+            let html = '';
+
+            tagsSelected.forEach(tag => {
+                html += `<div class="d-flex gap-1 bg-success p-2 text-light justify-content-center">
+                        <span>${tag.title}</span>
+                        <button type="button" class="btn-close" aria-label="Close" onclick="onRemoveTag('${tag.value}')"/>
+                    </div>`
+            });
+
+            tagList.innerHTML = '<div data-bs-theme="dark" class="d-flex gap-2 mb-3">' + html + '</div>';
+        }
+
+        //#endregion
+        //#region Register
+        document.getElementById('register-button').addEventListener('click', function () {
+            const valid = validateForm();
+            if (!valid) return;
+
+            const formData = new FormData();
+
+            if (!isCreating) {
+                formData.append('id', @Model.Post?.Id);
+            }
+
+            formData.append('title', document.getElementById('title-input').value);
+            formData.append('summary', document.getElementById('summary-input').value);
+            formData.append('content', quill.getSemanticHTML());
+            formData.append('image', document.getElementById('header-image-input').files[0] ?? '');
+            formData.append('postDate', document.getElementById('post-date-input').value)
+            tagsSelected.forEach(x => formData.append('tags', +x.value));
+
+            let url;
+
+            if (isCreating) {
+                url = '@Url.ActionLink("CreatePost")';
+            } else {
+                url = '@Url.ActionLink("UpdatePost")';
+            }
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+                .then(handleError)
+                .then((response) => {
+                    if (!response.ok)
+                        return;
+
+                    window.location.href = '@Url.Action("GetPosts")';
+                });
+        });
+
+        function validateForm() {
+            let valid = true;
+
+            if (isCreating) {
+                // Validates Image
+                valid = validateImageFormField('header-image-input', 'header-image-required-error', valid);
+            }
+
+            // Validates Summary
+            valid = ValidateFormField('summary-input', 'summary-required-error', valid);
+
+            // Validates Post Date
+            valid = ValidateFormField('post-date-input', 'post-date-required-error', valid);
+
+            // Validates Content
+            const contentErrorElement = document.getElementById('content-required-error');
+
+            if (quill.getLength() <= 1) {
+                valid = false;
+                contentErrorElement.classList.remove('d-none');
+            } else {
+                contentErrorElement.classList.add('d-none');
+            }
+
+            // Validates Title
+            valid = ValidateFormField('title-input', 'title-required-error', valid);
+
+            // Validates Tags
+            const tagsErrorElement = document.getElementById('tags-required-error');
+
+            if (!tagsSelected.length) {
+                valid = false;
+                tagsErrorElement.classList.remove('d-none');
+            } else {
+                tagsErrorElement.classList.add('d-none');
+            }
+
+            return valid;
+        }
+        //#endregion
+
+    </script>
+}
+
+

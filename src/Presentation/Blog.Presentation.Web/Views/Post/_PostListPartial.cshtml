@@ -1,0 +1,65 @@
+@model IEnumerable<Blog.Application.DTOs.Post.PostDto>
+
+<div class="row mt-4 g-3 row-cols-3">
+    @foreach (var post in Model)
+    {
+        <div class="col position-relative">
+            <a href="@Url.Action("", "Post")/@post.Slug"
+               class="text-decoration-none text-dark">
+
+                @* New Post *@
+                @if (post.NewPost)
+                {
+                    <span class="new-post-tag badge text-bg-info position-absolute">New</span>
+                }
+
+                @* Image *@
+                <img
+                    height="165px"
+                    class="rounded shadow object-fit-cover w-100"
+                    src="@Url.ActionLink("Index", "File")/@post.ImageFileName"
+                    alt="post @post.Title image"
+                    loading="lazy"/>
+
+                @* Tags *@
+                @if (post.Tags.Any())
+                {
+                    <div class="d-flex gap-1 my-2">
+                        @foreach (var tag in post.Tags)
+                        {
+                            <small class="bg-success py-1 px-2 text-light fw-bold">@tag</small>
+                        }
+                    </div>
+                }
+
+                @* Title *@
+                <h4 class="fw-bold my-2 text-truncate">@post.Title</h4>
+
+                @* Summary *@
+                <p class="mb-4">@post.Summary</p>
+            </a>
+
+            @* Author *@
+            <div class="d-flex">
+                <a href="@Url.ActionLink("Index", "Author")/yan-carlos">
+                    <img
+                        height="45px"
+                        width="45px"
+                        class="rounded-circle border border-white border-2 me-1"
+                        src="@Url.ActionLink("Index", "File")/@post.AuthorImageFileName"
+                        alt="author picture"/>
+                </a>
+                <div class="d-flex flex-column">
+                    <a href="@Url.ActionLink("Index", "Author")/yan-carlos"
+                       class="text-dark text-decoration-none">@post.AuthorName</a>
+                    <small class="text-secondary">
+                        @post.PostDate.ToString("MM/dd/yyyy")
+                        &nbsp; - &nbsp;
+                        <i class="bi bi-clock"></i>
+                        @post.ReadTimeMinutes minutes read
+                    </small>
+                </div>
+            </div>
+        </div>
+    }
+</div>

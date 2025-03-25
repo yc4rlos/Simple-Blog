@@ -1,0 +1,21 @@
+@model Blog.Presentation.Web.ViewModels.Author.AuthorViewModel
+
+
+<div class="my-4 d-flex justify-content-center" >
+    <img class="img-thumbnail author-image"
+        alt="Author photo" src="@Url.ActionLink("Index", "File")/@Model.Author.ImageFileName"/> 
+</div>
+<h3 class="text-center">@Model.Author.Name</h3>
+
+<hr/>
+<p>@Html.Raw(Model.Author.About)</p>
+@if (Model.Posts.Any())
+{
+    <div class="mt-5">
+        <hr/>
+    </div>
+    <div>
+        <h3>Some posts:</h3>
+        @await Html.PartialAsync("~/Views/Post/_PostListPartial.cshtml", Model.Posts)
+    </div>
+}

@@ -1,0 +1,247 @@
+@using Blog.Domain.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Blog.Presentation.Web.ViewModels.Admin.CreateUserViewModel
+
+@{
+    var isCreating = Model.User == null;
+    var submitButtonText = isCreating ? "Register" : "Update";
+    var pageTitleText = (isCreating ? "Create new" : "Edit") + " User";
+    ViewData["Title"] = pageTitleText;
+}
+<div class="d-flex justify-content-between align-items-center">
+    <h2 class="mb-3 mt-4">@pageTitleText</h2>
+    <div>
+        <a asp-action="GetUsers" class="btn btn-outline-danger">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back
+        </a>
+    </div>
+</div>
+<form>
+    <div id="image-form-div" class="row mb-3">
+        <div class="col-6">
+            <label for="image-input" class="form-label">
+                Image
+            </label>
+            <input class="form-control" type="file" id="image-input"/>
+            <small id="image-required-error" class="text-danger d-none">Image is required</small>
+        </div>
+        <div id="image-preview" class="col-6">
+            @if (Model.User?.ImageFileName != null)
+            {
+                <img alt="User image"
+                     class="img-thumbnail"
+                     src="@Url.ActionLink("Index", "File")/@Model.User.ImageFileName"/>
+            }
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="name-input" class="form-label"> Name <span class="text-danger">*</span></label>
+        <input id="name-input"
+               class="form-control"
+               required
+               placeholder="Type the name"
+               value="@Model.User?.Name"/>
+        <small id="name-required-error" class="text-danger d-none">Name is required</small>
+    </div>
+    <label for="role-select" class="form-label">Role <span class="text-danger">*</span></label>
+    <div class="row mb-3 g-2 align-items-center">
+        <div class="col">
+            <select id="role-select" class="form-select">
+                <option disabled>Select a role</option>
+                @foreach (var role in Html.GetEnumSelectList<Role>())
+                {
+                    @if (role.Text == Model.User?.Role.ToString())
+                    {
+                        <option value="@role.Value" selected>@role.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@role.Value">@role.Text</option>
+                    }
+                }
+            </select>
+            <small id="role-required-error" class="text-danger d-none">Role is required</small>
+        </div>
+    </div>
+
+    <div class="row row-cols-2 gy-2 mb-3">
+        <div class="col">
+            <label for="login-input" class="form-label">
+                Login
+                <span class="text-danger">*</span>
+            </label>
+            <input id="login-input"
+                   class="form-control"
+                   required
+                   placeholder="Type the login"
+                   value="@Model.User?.Login"/>
+            <small id="login-required-error" class="text-danger d-none">Email is required</small>
+        </div>
+        <div class="col ">
+            <label for="email-input" class="form-label">
+                Email
+                <span class="text-danger">*</span>
+            </label>
+            <input id="email-input"
+                   class="form-control"
+                   required
+                   placeholder="Type the email"
+                   value="@Model.User?.Email"/>
+            <small id="email-required-error" class="text-danger d-none">Email is required</small>
+        </div>
+    </div>
+
+    <label class="form-label">About</label>
+    <div id="toolbar-container" class="rounded-top-2">
+        <span class="ql-formats">
+            <select class="ql-font"></select>
+            <select class="ql-size"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
+            <button class="ql-strike"></button>
+        </span>
+        <span class="ql-formats">
+            <select class="ql-color"></select>
+            <select class="ql-background"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-script" value="sub"></button>
+            <button class="ql-script" value="super"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-header" value="1"></button>
+            <button class="ql-header" value="2"></button>
+            <button class="ql-blockquote"></button>
+            <button class="ql-code-block"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+            <button class="ql-indent" value="-1"></button>
+            <button class="ql-indent" value="+1"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-direction" value="rtl"></button>
+            <select class="ql-align"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-link"></button>
+            <button class="ql-image"></button>
+            <button class="ql-video"></button>
+            <button class="ql-formula"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-clean"></button>
+        </span>
+    </div>
+    <div class="mb-3">
+        <div id="editor" class="rounded-bottom-2">
+            @Html.Raw(Model.User?.About)
+        </div>
+        <small id="about-required-error" class="d-none text-danger">The about is required</small>
+    </div>
+
+    <div>
+        <button id="register-button" type="button" class="btn btn-success">
+            @submitButtonText
+        </button>
+    </div>
+</form>
+
+
+@section Styles
+{
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script>
+        const isCreating = @isCreating.ToString().ToLower();
+
+        //#region Header Image
+        addImagePreviewEventListener('image-input', 'image-preview');
+        //#endregion
+        //#region About
+        const quill = new Quill('#editor', {
+            modules: {
+                toolbar: '#toolbar-container',
+            },
+            placeholder: 'Type the about',
+            theme: 'snow'
+        });
+        //#endregion
+        //#region Register
+        document.getElementById('register-button').addEventListener('click', function () {
+            const valid = validateForm();
+            if (!valid) return;
+
+            const formData = new FormData();
+
+            if (!isCreating) {
+                formData.append('id', @Model.User?.Id);
+            }
+
+            formData.append('name', document.getElementById('name-input').value);
+            formData.append('email', document.getElementById('email-input').value);
+            formData.append('login', document.getElementById('login-input').value);
+            formData.append('role', document.getElementById('role-select').value);
+
+            const aboutContent = quill.getSemanticHTML();
+            if (aboutContent) {
+                formData.append('about', aboutContent);
+            }
+
+            const image = document.getElementById('image-input').files[0] ?? '';
+
+            if (image) {
+                formData.append('image', image);
+            }
+
+            let url;
+
+            if (isCreating) {
+                url = '@Url.ActionLink("CreateUser")';
+            } else {
+                url = '@Url.ActionLink("UpdateUser")';
+            }
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+                .then(handleError)
+                .then((response) => {
+                    if (!response.ok)
+                        return;
+
+                    window.location.href = '@Url.Action("GetUsers")';
+                });
+        });
+
+        function validateForm() {
+            let valid = true;
+
+            // Validates Name
+            valid = ValidateFormField('name-input', 'name-required-error', valid);
+
+            // Validates Login
+            valid = ValidateFormField('login-input', 'login-required-error', valid);
+
+            // Validates Role
+            valid = ValidateFormField('role-select', 'role-required-error', valid);
+
+            // Validates Email
+            valid = ValidateFormField('email-input', 'email-required-error', valid);
+
+            return valid;
+        }
+
+        //#endregion
+    </script>
+}
+

@@ -1,0 +1,83 @@
+﻿@model Blog.Presentation.Web.ViewModels.Home.HomeIndexViewModel
+
+<div class="d-flex justify-content-between my-4">
+    <div class="d-flex align-items-center">
+        <h3>Top categories</h3>
+        <div class="ms-2 bg-secondary bg-opacity-75 rounded-circle text-center">
+            <small class="text-light p-2 ">
+                @Model.TagTotalCount
+            </small>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Index" asp-controller="Tag" class="btn btn-outline-success">See All</a>
+    </div>
+</div>
+@await Html.PartialAsync("~/Views/Tag/_TagListPartial.cshtml", Model.Tags)
+<div id="post-list" class="mt-4">
+    <div class="px-4">
+        <hr/>
+    </div>
+    @await Html.PartialAsync("~/Views/Post/_PostListPartial.cshtml", Model.Posts)
+</div>
+<div id="loading" class="d-none my-3 d-flex justify-content-center">
+    <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+        //#region Infinite Scroll
+        let currentPage = 1;
+        let isLoading = true;
+        let lastPage = @Model.LastPostPage;
+        const postListElement = document.getElementById('post-list');
+
+        async function loadMorePosts() {
+            if (isLoading || currentPage === lastPage) return;
+
+            currentPage++;
+            await fetchPosts();
+        }
+
+        async function fetchPosts() {
+            setLoading(true);
+            const postQuantity = @Model.PostQuantity;
+            try {
+                const response = await fetch(`@Url.ActionLink("GetPostsPartial", "Post")?quantity=${postQuantity}&page=${currentPage}`);
+
+                if (!response.ok)
+                    throw new Error("Can't get more posts");
+
+                const htmlResponse = await response.text();
+                postListElement.innerHTML += htmlResponse;
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function setLoading(active) {
+            isLoading = active;
+
+            const loadingElement = document.getElementById('loading');
+
+            if (active) {
+                loadingElement.classList.remove('d-none');
+                return;
+            }
+
+            loadingElement.classList.add('d-none');
+        }
+
+        window.addEventListener('scroll', function () {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop >= document.body.offsetHeight - window.innerHeight - 20) {
+                loadMorePosts();
+            }
+        });
+        //#endregion
+    </script>
+}

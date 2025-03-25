@@ -1,0 +1,87 @@
+@{
+    string? imageUrl = null;
+
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        var imageFileName = User.Claims.First(x => x.Type == "ImageFileName").Value;
+        if (!string.IsNullOrEmpty(imageFileName))
+        {
+            imageUrl = Url.ActionLink("Index", "File") + "/" + imageFileName;
+        }
+    }
+}
+
+<header class="header-partial">
+    <div class="w-100 position-fixed z-3">
+        <nav class="navbar mx-auto w-75 rounded bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img style="filter: invert(100%);"
+                         src="~/images/logo.png"
+                         alt="Blog logo"
+                         width="40px"
+                         height="40px">
+                    <span class="text-light">Yan Carlos</span>
+                </a>
+                <div class="d-flex gap-2">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="d-flex align-items-center">
+                            @if(imageUrl != null)
+                            {
+                                <img alt="Logged user image"
+                                     src="@imageUrl"
+                                     width="35px"
+                                     height="35px"
+                                     class="rounded-circle border border-white"/>
+                            }
+                            <span class="mx-2 text-white">
+                                @User.Identity.Name
+                            </span>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" 
+                                    aria-expanded="false">
+                                <i class="bi bi-house-gear"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-action="Index" asp-controller="Admin">Admin</a></li>
+                                <li><a class="dropdown-item" asp-action="UpdatePassword" asp-controller="Auth">Update Password</a></li>
+                                <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-light"
+                           asp-action="Login"
+                           asp-controller="Auth">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                        </a>
+                    }
+                    <button data-bs-toggle="modal"
+                            data-bs-target="#searchModal"
+                            class="btn btn-success">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="modal fade" id="searchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body bg-dark rounded">
+                <form class="input-group" method="get" asp-action="Search">
+                    <input name="value" type="text" class="form-control" placeholder="Search for Posts or Categories">
+                    <button class="btn btn-outline-success" type="submit">
+                        <i class="bi bi-search"></i>
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

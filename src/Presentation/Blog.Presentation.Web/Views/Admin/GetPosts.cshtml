@@ -8,6 +8,7 @@
     var nextPage = Model.CurrentPage + 1;
 }
 
+
 <div class="mt-4">
     <div class="d-flex justify-content-between mb-3">
         <h3>Posts</h3>
@@ -25,48 +26,53 @@
             </a>
         </div>
     </div>
+    <form method="get" class="d-flex my-3">
+    <div class="input-group">
+        <input type="text" name="searchTerm" class="form-control" placeholder="Search posts"
+            value="@Model.SearchTerm" />
+        <button type="submit" class="btn btn-outline-primary">
+            <i class="bi bi-search me-1"></i>
+            Search
+        </button>
+    </div>
+    </form>
     <table class="table">
         <thead>
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Title</th>
-            <th scope="col">Slug</th>
-            <th scope="col">Author</th>
-            <th scope="col">Post Date</th>
-            <th scope="col">Actions</th>
-        </tr>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Title</th>
+                <th scope="col">Slug</th>
+                <th scope="col">Author</th>
+                <th scope="col">Post Date</th>
+                <th scope="col">Actions</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var post in Model.Posts)
-        {
-            <tr id="@post.Title">
-                <th scope="row">@post.Id</th>
-                <td>@post.Title</td>
-                <td>@post.Slug</td>
-                <td>Yan Carlos</td>
-                <td>@post.PostDate.ToString("MM/dd/yyyy")</td>
-                <td class="d-flex gap-2">
-                    <a class="btn btn-info"
-                       target="_blank"
-                       href="@Url.ActionLink("", "Post")/@post.Slug">
-                        <i class="bi bi-box-arrow-up-right"></i>
-                    </a>
-                    @if (User.IsInRole(Role.Author.ToString()))
-                    {
-                        <a class="btn btn-warning" asp-action="UpdatePost" asp-route-slug="@post.Slug">
-                            <i class="bi bi-pencil"></i>
+            @foreach (var post in Model.Posts)
+            {
+                <tr id="@post.Title">
+                    <th scope="row">@post.Id</th>
+                    <td>@post.Title</td>
+                    <td>@post.Slug</td>
+                    <td>Yan Carlos</td>
+                    <td>@post.PostDate.ToString("MM/dd/yyyy")</td>
+                    <td class="d-flex gap-2">
+                        <a class="btn btn-info" target="_blank" href="@Url.ActionLink("", "Post")/@post.Slug">
+                            <i class="bi bi-box-arrow-up-right"></i>
                         </a>
-                        <a id="delete-post-button-@post.Slug"
-                           class="btn btn-danger"
-                           data-bs-toggle="modal"
-                           data-bs-target="#deleteModal"
-                           onclick="handleDeletePost(@post.Id, '@post.Title')">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    }
-                </td>
-            </tr>
-        }
+                        @if (User.IsInRole(Role.Author.ToString()))
+                        {
+                            <a class="btn btn-warning" asp-action="UpdatePost" asp-route-slug="@post.Slug">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <button id="delete-post-button-@post.Slug" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal" onclick="handleDeletePost(@post.Id, '@post.Title')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
@@ -74,10 +80,8 @@
     <nav>
         <ul class="pagination">
             <li class="page-item">
-                <a class="page-link"
-                   asp-action="GetPosts"
-                   asp-route-page="@previousPage">Previous</a>
-            </li>
+                <a class="page-link" asp-action="GetPosts" asp-route-searchTerm="@Model.SearchTerm">Previous</a>
+             </li>
             @for (var i = 1; i <= Model.LastPage; i++)
             {
                 <li class="page-item">
@@ -90,33 +94,25 @@
                     else
                     {
                         var i1 = i;
-                        <a class="page-link"
-                           asp-action="GetPosts"
-                           asp-route-page="@i1">
-                            @i1
+                        <a class="page-link" asp-action="GetPosts" 
+                           asp-route-page="@i1" asp-route-searchTerm="@Model.SearchTerm">
+                             @i1
                         </a>
                     }
                 </li>
             }
             <li class="page-item">
-
-                <a class="page-link"
-                   asp-action="GetPosts"
-                   asp-route-page="@nextPage">Next</a>
-            </li>
-        </ul>
+                 <a class="page-link" asp-action="GetPosts" 
+                   asp-route-page="@nextPage" asp-route-searchTerm="@Model.SearchTerm">Next</a>
+            </li> 
     </nav>
 </div>
-
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Delete post</h1>
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
@@ -124,7 +120,7 @@
                 <span id="post-delete-title" class="fw-bold"></span>?
             </div>
             <form method="post" asp-action="DeletePost" class="modal-footer">
-                <input id="post-id-input" name="id" type="hidden"/>
+                <input id="post-id-input" name="id" type="hidden" />
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button id="confirm-delete-post-button" type="submit" class="btn btn-danger">Delete</button>
             </form>

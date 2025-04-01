@@ -49,7 +49,7 @@ public class AdminController(ISender sender) : Controller
 
     [AuthorizeRole(Role.Author)]
     [HttpGet("users/create")]
-    
+
     public IActionResult CreateUser()
     {
         var viewModel = new CreateUserViewModel();
@@ -89,19 +89,20 @@ public class AdminController(ISender sender) : Controller
     [HttpPost("users/delete")]
     public async Task<IActionResult> DeleteUser(DeleteUserCommand command)
     {
-       await sender.Send(command);
-       return RedirectToAction("GetUsers");
+        await sender.Send(command);
+        return RedirectToAction("GetUsers");
     }
     #endregion
-    
+
     #region Tags
     [HttpGet("tags")]
-    public async Task<IActionResult> GetTags(int page = 1)
+    public async Task<IActionResult> GetTags(int page = 1, string searchTerm = "")
     {
-        var tagsResult = await sender.Send(new GetTagsQuery(10, page));
+        var tagsResult = await sender.Send(new GetTagsQuery(10, page, SearchTerm: searchTerm));
 
         var viewModel = new GetTagsViewModel
         {
+            SearchTerm = searchTerm,
             Tags = tagsResult.Tags,
             CurrentPage = page,
             LastPage = tagsResult.LastPage
@@ -125,7 +126,7 @@ public class AdminController(ISender sender) : Controller
 
         return StatusCode(StatusCodes.Status201Created);
     }
-    
+
     [AuthorizeRole(Role.Author)]
     [HttpGet("tags/update/{slug}")]
     public async Task<IActionResult> UpdateTag(string slug)
@@ -164,22 +165,23 @@ public class AdminController(ISender sender) : Controller
         }
     }
     #endregion
-    
+
     #region Posts
     [HttpGet("posts")]
-    public async Task<IActionResult> GetPosts(int page = 1)
+    public async Task<IActionResult> GetPosts(int page = 1, string searchTerm = "")
     {
         var postQuantity = 10;
-        var postsResult = await sender.Send(new GetPostsQuery(10, page));
+        var postsResult = await sender.Send(new GetPostsQuery(10, page, SearchTerm: searchTerm));
 
         var viewModel = new GetPostsViewModel
         {
+            SearchTerm = searchTerm,
             PostQuantity = postQuantity,
             Posts = postsResult.Posts,
             CurrentPage = page,
             LastPage = postsResult.LastPage
         };
-        
+
         return View(viewModel);
     }
 
@@ -211,7 +213,8 @@ public class AdminController(ISender sender) : Controller
         var tagsResult = await sender.Send(new GetTagsQuery());
         var slugs = postResult.Post.Tags.Select(tag => new
         {
-            title = tag.Name, value = tag.Id
+            title = tag.Name,
+            value = tag.Id
         });
 
         var viewModel = new CreatePostViewModel
@@ -220,8 +223,8 @@ public class AdminController(ISender sender) : Controller
             Tags = tagsResult.Tags,
             SlugsJsonString = JsonSerializer.Serialize(slugs)
         };
-        
-        return View("CreatePost",viewModel);
+
+        return View("CreatePost", viewModel);
     }
 
     [AuthorizeRole(Role.Author)]

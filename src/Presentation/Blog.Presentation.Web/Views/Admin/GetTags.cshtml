@@ -25,48 +25,54 @@
             </a>
         </div>
     </div>
+    <form method="get" class="d-flex my-3">
+        <div class="input-group">
+            <input type="text" name="searchTerm" class="form-control" placeholder="Search tags"
+                value="@Model.SearchTerm" />
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-search me-1"></i>
+                Search
+            </button>
+        </div>
+    </form>
     <h2>
-    @ViewBag.Error
+        @ViewBag.Error
     </h2>
     <table class="table">
         <thead>
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Name</th>
-            <th scope="col">Post quantity</th>
-            <th scope="col">Actions</th>
-        </tr>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Post quantity</th>
+                <th scope="col">Actions</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var tag in Model.Tags)
-        {
-            <tr>
-                <th scope="row">@tag.Id</th>
-                <td>@tag.Name</td>
-                <td>@tag.PostCount</td>
-                <td class="d-flex gap-2">
-                    <a class="btn btn-info"
-                       target="_blank"
-                       href="@Url.ActionLink("", "Tag")/@tag.Slug">
-                        <i class="bi bi-box-arrow-up-right"></i>
-                    </a>
-                    @if (User.IsInRole(Role.Author.ToString()))
-                    {
-                        <a class="btn btn-warning" asp-action="UpdateTag" asp-route-slug="@tag.Slug">
-                            <i class="bi bi-pencil">
+            @foreach (var tag in Model.Tags)
+            {
+                <tr>
+                    <th scope="row">@tag.Id</th>
+                    <td>@tag.Name</td>
+                    <td>@tag.PostCount</td>
+                    <td class="d-flex gap-2">
+                        <a class="btn btn-info" target="_blank" href="@Url.ActionLink("", "Tag")/@tag.Slug">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                        @if (User.IsInRole(Role.Author.ToString()))
+                        {
+                            <a class="btn btn-warning" asp-action="UpdateTag" asp-route-slug="@tag.Slug">
+                                <i class="bi bi-pencil">
 
-                            </i>
-                        </a>
-                        <a class="btn btn-danger"
-                           data-bs-toggle="modal"
-                           data-bs-target="#deleteModal"
-                           onclick="handleDeleteTag(@tag.Id, '@tag.Name')">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    }
-                </td>
-            </tr>
-        }
+                                </i>
+                            </a>
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                onclick="handleDeleteTag(@tag.Id, '@tag.Name')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
@@ -74,9 +80,8 @@
     <nav>
         <ul class="pagination">
             <li class="page-item">
-                <a class="page-link"
-                   asp-action="GetTags"
-                   asp-route-page="@previousPage">Previous</a>
+                <a class="page-link" asp-action="GetTags" asp-route-page="@previousPage"
+                    asp-route-searchTerm="@Model.SearchTerm">Previous</a>
             </li>
             @for (var i = 1; i <= Model.LastPage; i++)
             {
@@ -90,9 +95,7 @@
                     else
                     {
                         var i1 = i;
-                        <a class="page-link"
-                           asp-action="GetTags"
-                           asp-route-page="@i1">
+                        <a class="page-link" asp-action="GetTags" asp-route-page="@i1" asp-route-searchTerm="@Model.SearchTerm">
                             @i1
                         </a>
                     }
@@ -100,9 +103,8 @@
             }
             <li class="page-item">
 
-                <a class="page-link"
-                   asp-action="GetTags"
-                   asp-route-page="@nextPage">Next</a>
+                <a class="page-link" asp-action="GetTags" asp-route-page="@nextPage"
+                    asp-route-searchTerm="@Model.SearchTerm">Next</a>
             </li>
         </ul>
     </nav>
@@ -113,10 +115,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Delete tag</h1>
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
@@ -124,7 +123,7 @@
                 <span id="tag-delete-title" class="fw-bold"></span>?
             </div>
             <form method="post" asp-action="DeleteTag" class="modal-footer">
-                <input id="tag-id-input" name="id" type="hidden"/>
+                <input id="tag-id-input" name="id" type="hidden" />
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn btn-danger">Delete</button>
             </form>

@@ -4,7 +4,7 @@ using Blog.Domain.Models;
 
 namespace Blog.Application.Core.UseCases.Tags.Queries.GetTags;
 
-internal class GetTagsQueryHandler(IApplicationDbContext dbContext) 
+internal class GetTagsQueryHandler(IApplicationDbContext dbContext)
     : IRequestHandler<GetTagsQuery, GetTagsResult>
 {
     public async Task<GetTagsResult> Handle(GetTagsQuery query, CancellationToken cancellationToken)
@@ -17,6 +17,7 @@ internal class GetTagsQueryHandler(IApplicationDbContext dbContext)
         }
 
         var tags = await GetDbQueryTag(query)
+            .Skip(query.Quantity * (query.Page - 1))
             .Take(query.Quantity)
             .Select(x => x.ToTagDto())
             .ToListAsync(cancellationToken);

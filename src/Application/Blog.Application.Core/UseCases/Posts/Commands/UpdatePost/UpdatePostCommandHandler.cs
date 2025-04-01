@@ -1,9 +1,7 @@
 using Blog.Application.Core.Data;
-using Blog.Application.Core.UseCases.Shared.Exceptions;
 using Blog.Application.Core.UseCases.Shared.Exceptions.Post;
 using Blog.Application.Core.UseCases.Shared.Exceptions.Validation;
-using Blog.Application.Core.Validators.CustomFluentValidations;
-using Blog.Application.Core.Validators.SlugValidator;
+using Blog.Domain.Abstractions.Repositories;
 using Blog.Domain.Abstractions.Services;
 
 namespace Blog.Application.Core.UseCases.Posts.Commands.UpdatePost;
@@ -11,7 +9,7 @@ namespace Blog.Application.Core.UseCases.Posts.Commands.UpdatePost;
 internal class UpdatePostCommandHandler(
     IApplicationDbContext dbContext,
     IFileService fileService,
-    ISlugValidator slugValidator)
+    ISlugRepository slugRepository)
     : IRequestHandler<UpdatePostCommand>
 {
     public async Task Handle(UpdatePostCommand command, CancellationToken cancellationToken)
@@ -29,28 +27,28 @@ internal class UpdatePostCommandHandler(
             postEntity.ImageFileName = await fileService.AddFileAsync(command.Image.FileName, stream);
         }
 
-        var titleChanged = command.Title != postEntity.Title; 
+        var titleChanged = command.Title != postEntity.Title;
 
         command.ToEntity(postEntity);
-        
+
         // Read Time
         postEntity.ReadTimeMinutes = ReadTimeHelper.GetReadTimeMinutes(postEntity.Content);
-        
+
         // Check Slug
         if (titleChanged)
         {
-            var slugAlreadyRegistered = await slugValidator.SlugExistsAsync(postEntity, cancellationToken);
+            var slugAlreadyRegistered = await slugRepository.ExistsAsync(postEntity, cancellationToken);
             if (slugAlreadyRegistered)
                 throw new SlugAlreadyRegisteredException(postEntity.Slug);
         }
-        
+
         await UpdateTags(postEntity, cancellationToken);
-        
+
         dbContext.Posts.Update(postEntity);
 
         await dbContext.SaveChangesAsync(cancellationToken);
     }
- 
+
     private async Task UpdateTags(Post post, CancellationToken cancellationToken)
     {
         var currentTags = await dbContext.PostTags
@@ -77,7 +75,7 @@ internal class UpdatePostCommandHandler(
                 await dbContext.PostTags.AddAsync(tag, cancellationToken);
             }
         }
-        
+
         post.Tags.Clear();
     }
 }

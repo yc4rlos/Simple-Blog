@@ -1,8 +1,10 @@
 using Blog.Application.Core.Data;
+using Blog.Domain.Abstractions.Repositories;
 using Blog.Domain.Abstractions.Services;
 using Blog.Infrastructure.Data.Context;
 using Blog.Infrastructure.Options;
 using Blog.Infrastructure.Persistence.Interceptors;
+using Blog.Infrastructure.Persistence.Repositories;
 using Blog.Infrastructure.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,9 @@ public static class DependencyInjection
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEmailService, EmailService>();
+
+        // Repositories
+        services.AddScoped<ISlugRepository, SlugRepository>();
 
         // Database
         services.AddDbContext<ApplicationDbContext>((sp, options) =>

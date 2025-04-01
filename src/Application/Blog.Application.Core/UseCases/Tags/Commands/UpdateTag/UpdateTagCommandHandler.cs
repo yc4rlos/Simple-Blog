@@ -1,8 +1,7 @@
 using Blog.Application.Core.Data;
-using Blog.Application.Core.UseCases.Shared.Exceptions;
 using Blog.Application.Core.UseCases.Shared.Exceptions.Tag;
 using Blog.Application.Core.UseCases.Shared.Exceptions.Validation;
-using Blog.Application.Core.Validators.SlugValidator;
+using Blog.Domain.Abstractions.Repositories;
 using Blog.Domain.Abstractions.Services;
 
 namespace Blog.Application.Core.UseCases.Tags.Commands.UpdateTag;
@@ -10,7 +9,7 @@ namespace Blog.Application.Core.UseCases.Tags.Commands.UpdateTag;
 internal class UpdateTagCommandHandler(
     IApplicationDbContext dbContext,
     IFileService fileService,
-    ISlugValidator slugValidator)
+    ISlugRepository slugValidator)
     : IRequestHandler<UpdateTagCommand>
 {
     public async Task Handle(UpdateTagCommand command, CancellationToken cancellationToken)
@@ -39,7 +38,7 @@ internal class UpdateTagCommandHandler(
             tag.Slug = SlugHelper.CreateSlug(command.Name);
 
             // Check slug
-            var slugAlreadyRegistered = await slugValidator.SlugExistsAsync(tag, cancellationToken);
+            var slugAlreadyRegistered = await slugValidator.ExistsAsync(tag, cancellationToken);
             if (slugAlreadyRegistered)
                 throw new SlugAlreadyRegisteredException(tag.Slug);
         }

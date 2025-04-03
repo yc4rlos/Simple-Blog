@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Blog.Presentation.Web.Resources.Responses;
 using Microsoft.AspNetCore.Diagnostics;
-using ValidationException = FluentValidation.ValidationException;
 
 namespace Blog.Presentation.Web.Resources.ExceptionHandlers;
 
@@ -11,7 +10,6 @@ public class CustomExceptionHandler: IExceptionHandler
     {
         var statusCode = exception switch
         {
-            ValidationException => StatusCodes.Status400BadRequest,
             BadRequestException => StatusCodes.Status400BadRequest,
             NotFoundException => StatusCodes.Status404NotFound,
             UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
@@ -20,9 +18,13 @@ public class CustomExceptionHandler: IExceptionHandler
         
         var response = new DefaultResponse
         {
-            Message = exception.GetType().ToString(),
-            Errors = exception.Message.Split(';').ToList()
+            Message = exception.Message
         };
+
+        if (exception is BadRequestException badRequestException)
+        {
+            response.Errors = badRequestException.Failures;
+        }
         
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = statusCode;

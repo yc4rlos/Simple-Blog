@@ -23,8 +23,8 @@ public class ValidationBehaviour<TRequest, TResponse> (IEnumerable<IValidator<TR
 
         if (failures.Count > 0)
         {
-            var message = string.Join(';', failures.Select(x => x.ErrorMessage));
-            throw new BadRequestException(failures, message);
+            var errors = failures.Select(x => x.ErrorMessage).ToList();
+            throw new BadRequestException(errors, "One or more validation failures have occurred.");
         }
         
         return await next();

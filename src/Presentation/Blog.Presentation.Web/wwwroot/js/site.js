@@ -4,8 +4,12 @@ async function handleError(response) {
         return response;
 
     const responseJson = await response.json()
-    const errors = responseJson.Errors;
+    let errors = responseJson.Errors;
 
+    if(errors.length === 0){
+        errors = [responseJson.Message];
+    }
+    
     showToastsForErrorMessages(errors);
 }
 

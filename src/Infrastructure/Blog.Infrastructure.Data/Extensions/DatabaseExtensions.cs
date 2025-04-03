@@ -26,16 +26,6 @@ public static class DatabaseExtensions
     private static async Task SeedAsync(ApplicationDbContext context)
     {
         await SeedUserAsync(context);
-        await SeedTagsAsync(context);
-    }
-
-    private static async Task SeedTagsAsync(ApplicationDbContext context)
-    {
-        if (!await context.Tags.AnyAsync())
-        {
-            await context.Tags.AddRangeAsync(TagInitialData.Data);
-            await context.SaveChangesAsync();
-        }
     }
 
     private static async Task SeedUserAsync(ApplicationDbContext context)

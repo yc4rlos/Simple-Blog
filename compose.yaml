@@ -4,6 +4,19 @@
     build:
       context: .
       dockerfile: src/Presentation/Blog.Presentation.Web/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=blog_database;Database=Blog;User Id=sa;Password=Str13Pass678;TrustServerCertificate=True
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=123456
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports: 
+      - "8080:8080"
+      - "8000:443"
+    depends_on:
+      - blog_database
+    volumes:
+      - ~/.aspnet/https:/https:ro
   blog_database:
     container_name: blog_database
     image: mcr.microsoft.com/mssql/server:2022-latest

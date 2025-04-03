@@ -14,7 +14,7 @@ public static class UserInitialData
             Login = "author",
             Email = "author@example.com",
             Role = Role.Author,
-            Password = "Password!"
+            Password = "$2a$11$/Sy9bhuVPG3RoJrIAIjX5uZmZcj6jys4E/p2dgKSb5OQoJoh7VQoa"
         }
     };
 }

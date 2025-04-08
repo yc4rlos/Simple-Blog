@@ -2,7 +2,6 @@ using Blog.Application.Core.Data;
 using Blog.Application.Core.UseCases.Shared.Exceptions.Validation;
 using Blog.Domain.Abstractions.Repositories;
 using Blog.Domain.Abstractions.Services;
-using Blog.Domain.Models;
 
 namespace Blog.Application.Core.UseCases.Tags.Commands.CreateTag;
 

@@ -1,5 +1,4 @@
 using Blog.Application.Core.Common;
-using Microsoft.AspNetCore.Http;
 
 namespace Blog.Application.Core.UseCases.Tags.Commands.CreateTag;
 

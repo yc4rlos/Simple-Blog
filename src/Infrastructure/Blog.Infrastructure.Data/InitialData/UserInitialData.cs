@@ -9,6 +9,7 @@ public static class UserInitialData
     {
         new User
         {
+            Id= 1,
             Name = "Author",
             Slug = "author",
             Login = "author",

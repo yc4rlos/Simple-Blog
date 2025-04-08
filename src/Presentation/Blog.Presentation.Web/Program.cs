@@ -1,5 +1,4 @@
 using Blog.Application.Core;
-using Blog.Infrastructure.Data.Extensions;
 using Blog.Infrastructure.IOC;
 using Blog.Infrastructure.Options;
 using Blog.Presentation.Web;
@@ -18,11 +17,6 @@ builder.Services
 var app = builder.Build();
 
 app.UsePresentationServices();
-if (builder.Environment.IsDevelopment())
-{
-    app.InitializeDatabaseAsync();
-    app.SeedDatabaseAsync().Wait();
-}
 
 if(app.Environment.IsProduction())
 {

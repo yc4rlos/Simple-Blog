@@ -1,4 +1,5 @@
 using Blog.Domain.Models;
+using Blog.Infrastructure.Data.InitialData;
 
 namespace Blog.Infrastructure.Data.Configurations;
 
@@ -29,5 +30,12 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
         
         builder.Property(x => x.Password)
             .IsRequired();
+
+        SeedData(builder);
+    }
+
+    private void SeedData(EntityTypeBuilder<User> builder )
+    {
+        builder.HasData(UserInitialData.Data);
     }
 }

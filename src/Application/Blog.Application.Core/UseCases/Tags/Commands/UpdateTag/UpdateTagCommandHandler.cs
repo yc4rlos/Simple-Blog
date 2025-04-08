@@ -27,8 +27,8 @@ internal class UpdateTagCommandHandler(
                 await fileService.DeleteFileAsync(tag.ImageFileName, cancellationToken);
             }
 
-            await using var stream = command.Image.OpenReadStream();
-            tag.ImageFileName = await fileService.AddFileAsync(command.Image.Name, stream);
+            tag.ImageFileName = await fileService.AddFileAsync(command.Image.FileName, command.Image.Content);
+            await command.Image.Content.DisposeAsync();
         }
 
         // Name

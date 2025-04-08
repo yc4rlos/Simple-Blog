@@ -1,5 +1,5 @@
 using Blog.Domain.Enums;
-using Microsoft.AspNetCore.Http;
+using Blog.Application.Core.Common;
 
 namespace Blog.Application.Core.UseCases.User.Commands.CreateUser;
 
@@ -9,7 +9,7 @@ public record CreateUserCommand(
     string? About,
     string Login,
     Role Role,
-    IFormFile? Image):IRequest;
+    FileUpload? Image) : IRequest;
 
 public static class CreateUserCommandExtensions
 {

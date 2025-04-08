@@ -16,25 +16,20 @@
                 Image
                 <span class="text-danger">*</span>
             </label>
-            <input id="image-input" class="form-control" type="file" accept="image/*"/>
+            <input id="image-input" class="form-control" type="file" accept="image/*" />
             <span id="image-required-error" class="text-danger d-none">Input image is required</span>
         </div>
         <div id="image-preview">
             @if (Model.Tag?.ImageFileName != null)
             {
-                <img alt="tag image"
-                     class="img-thumbnail"
-                     src="@Url.ActionLink("Index", "File")/@Model.Tag.ImageFileName"/>
+                <img alt="tag" class="img-thumbnail" src="@Url.ActionLink("Index", "File")/@Model.Tag.ImageFileName" />
             }
         </div>
     </div>
     <div class="mb-3">
         <label for="name-input" class="form-label"> Name <span class="text-danger">*</span></label>
-        <input id="name-input"
-               value="@Model.Tag?.Name"
-               class="form-control"
-               required
-               placeholder="Type the post title"/>
+        <input id="name-input" value="@Model.Tag?.Name" class="form-control" required
+            placeholder="Type the post title" />
         <span id="name-required-error" class="text-danger d-none">Name is required</span>
     </div>
     <div>
@@ -73,7 +68,7 @@
             if (!isCreating) {
                 formData.append('id', @Model.Tag?.Id);
             }
-            
+
             formData.append('name', document.getElementById('name-input').value);
             formData.append('image', document.getElementById('image-input').files[0] ?? '');
 
@@ -82,7 +77,7 @@
             if (isCreating) {
                 url = '@Url.ActionLink("CreateTag")';
             } else {
-                url = '@Url.ActionLink("UpdateTag")';
+                url = '/admin/tags/update/'+ @Model.Tag?.Id;
             }
 
             fetch(url, {

@@ -23,25 +23,20 @@
                 Header Image
                 <span class="text-danger">*</span>
             </label>
-            <input class="form-control" type="file" id="header-image-input" accept="image/*"/>
+            <input class="form-control" type="file" id="header-image-input" accept="image/*" />
             <small id="header-image-required-error" class="text-danger d-none">Image is required</small>
         </div>
         <div id="image-preview" class="col-6">
             @if (Model.Post?.ImageFileName != null)
             {
-                <img alt="Post image"
-                     class="img-thumbnail"
-                     src="@Url.ActionLink("Index", "File")/@Model.Post.ImageFileName"/>
+                <img alt="Post" class="img-thumbnail" src="@Url.ActionLink("Index", "File")/@Model.Post.ImageFileName" />
             }
         </div>
     </div>
     <div class="mb-3">
         <label for="title-input" class="form-label"> Title <span class="text-danger">*</span></label>
-        <input id="title-input"
-               class="form-control"
-               required
-               placeholder="Type the post title"
-               value="@Model.Post?.Title"/>
+        <input id="title-input" class="form-control" required placeholder="Type the post title"
+            value="@Model.Post?.Title" />
         <small id="title-required-error" class="text-danger d-none">Title is required</small>
     </div>
     <label for="tag-select" class="form-label">Tags <span class="text-danger">*</span></label>
@@ -73,21 +68,14 @@
                 Summary
                 <span class="text-danger">*</span>
             </label>
-            <input id="summary-input"
-                   class="form-control"
-                   required
-                   placeholder="Type the summary"
-                   value="@Model.Post?.Summary"/>
+            <input id="summary-input" class="form-control" required placeholder="Type the summary"
+                value="@Model.Post?.Summary" />
             <small id="summary-required-error" class="text-danger d-none">Summary is required</small>
         </div>
         <div class="col">
             <label for="post-date-input" class="form-label"> Post Date <span class="text-danger">*</span></label>
-            <input id="post-date-input"
-                   class="form-control"
-                   required
-                   placeholder="Type the post title"
-                   type="date"
-                   value="@Model.Post?.PostDate.ToString("yyyy-MM-dd")"/>
+            <input id="post-date-input" class="form-control" required placeholder="Type the post title" type="date"
+                value="@Model.Post?.PostDate.ToString("yyyy-MM-dd")" />
             <small id="post-date-required-error" class="d-none text-danger">The content is required</small>
         </div>
     </div>
@@ -189,7 +177,7 @@
             if (!tagSelectValue || tagsSelected.find(x => x.value === tagSelectValue))
                 return;
 
-            tagsSelected.push({value: tagSelectValue, title: tagSelectedName});
+            tagsSelected.push({ value: tagSelectValue, title: tagSelectedName });
 
             renderTagList();
         });
@@ -211,9 +199,9 @@
 
             tagsSelected.forEach(tag => {
                 html += `<div class="d-flex gap-1 bg-success p-2 text-light justify-content-center">
-                        <span>${tag.title}</span>
-                        <button type="button" class="btn-close" aria-label="Close" onclick="onRemoveTag('${tag.value}')"/>
-                    </div>`
+                                <span>${tag.title}</span>
+                                <button type="button" class="btn-close" aria-label="Close" onclick="onRemoveTag('${tag.value}')"/>
+                            </div>`
             });
 
             tagList.innerHTML = '<div data-bs-theme="dark" class="d-flex gap-2 mb-3">' + html + '</div>';
@@ -243,7 +231,7 @@
             if (isCreating) {
                 url = '@Url.ActionLink("CreatePost")';
             } else {
-                url = '@Url.ActionLink("UpdatePost")';
+                url = '/admin/posts/update/' + @Model.Post?.Id;
             }
 
             fetch(url, {
@@ -302,5 +290,3 @@
 
     </script>
 }
-
-

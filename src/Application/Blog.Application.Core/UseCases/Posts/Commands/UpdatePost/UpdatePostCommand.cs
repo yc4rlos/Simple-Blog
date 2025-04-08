@@ -1,6 +1,4 @@
-using Blog.Application.Core.Helpers;
-using Blog.Domain.Models;
-using Microsoft.AspNetCore.Http;
+using Blog.Application.Core.Common;
 
 namespace Blog.Application.Core.UseCases.Posts.Commands.UpdatePost;
 
@@ -11,7 +9,7 @@ public record UpdatePostCommand(
     string Summary,
     DateTime PostDate,
     List<int> Tags,
-    IFormFile? Image) : IRequest;
+    FileUpload? Image) : IRequest;
 
 
 public static class UpdatePostCommandExtension

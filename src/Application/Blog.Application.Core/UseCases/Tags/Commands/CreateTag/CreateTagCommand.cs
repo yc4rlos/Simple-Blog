@@ -1,5 +1,6 @@
+using Blog.Application.Core.Common;
 using Microsoft.AspNetCore.Http;
 
 namespace Blog.Application.Core.UseCases.Tags.Commands.CreateTag;
 
-public record CreateTagCommand(string Name, IFormFile Image): IRequest;
+public record CreateTagCommand(string Name, FileUpload Image) : IRequest;

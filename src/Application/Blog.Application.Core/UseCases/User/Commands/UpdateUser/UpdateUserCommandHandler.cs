@@ -52,9 +52,8 @@ internal class UpdateUserCommandHandler(
             {
                 await fileService.DeleteFileAsync(user.ImageFileName, cancellationToken);
             }
-
-            var stream = command.Image.OpenReadStream();
-            var imageName = await fileService.AddFileAsync(command.Image.Name, stream);
+            var imageName = await fileService.AddFileAsync(command.Image.FileName, command.Image.Content);
+            await command.Image.Content.DisposeAsync();
             user.ImageFileName = imageName;
         }
 

@@ -1,20 +1,17 @@
 using System.Text.Json;
-using Blog.Application.Core.UseCases.Posts.Commands.CreatePost;
 using Blog.Application.Core.UseCases.Posts.Commands.DeletePost;
-using Blog.Application.Core.UseCases.Posts.Commands.UpdatePost;
 using Blog.Application.Core.UseCases.Posts.Queries.GetPost;
 using Blog.Application.Core.UseCases.Posts.Queries.GetPosts;
-using Blog.Application.Core.UseCases.Tags.Commands.CreateTag;
 using Blog.Application.Core.UseCases.Tags.Commands.DeleteTag;
-using Blog.Application.Core.UseCases.Tags.Commands.UpdateTag;
 using Blog.Application.Core.UseCases.Tags.Queries.GetTagBySlug;
 using Blog.Application.Core.UseCases.Tags.Queries.GetTags;
-using Blog.Application.Core.UseCases.User.Commands.CreateUser;
 using Blog.Application.Core.UseCases.User.Commands.DeleteUser;
-using Blog.Application.Core.UseCases.User.Commands.UpdateUser;
 using Blog.Application.Core.UseCases.User.Queries.GetUserById;
 using Blog.Application.Core.UseCases.User.Queries.GetUsers;
-using Blog.Domain.Enums;
+using Blog.Presentation.Web.Requests;
+using Blog.Presentation.Web.Requests.Post;
+using Blog.Presentation.Web.Requests.Tag;
+using Blog.Presentation.Web.Requests.User;
 using Blog.Presentation.Web.Resources.Attributes;
 using Blog.Presentation.Web.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -58,8 +55,9 @@ public class AdminController(ISender sender) : Controller
 
     [AuthorizeRole(Role.Author)]
     [HttpPost("users/create")]
-    public async Task<IActionResult> CreateUser(CreateUserCommand command)
+    public async Task<IActionResult> CreateUser(CreateOrUpdateUserRequest form)
     {
+        var command = form.ToCreateCommand();
         await sender.Send(command);
         return StatusCode(StatusCodes.Status201Created);
     }
@@ -79,8 +77,9 @@ public class AdminController(ISender sender) : Controller
 
     [AuthorizeRole(Role.Author)]
     [HttpPost("users/update/{id}")]
-    public async Task<IActionResult> UpdateUser(UpdateUserCommand command)
+    public async Task<IActionResult> UpdateUser(int id, CreateOrUpdateUserRequest form)
     {
+        var command = form.ToUpdateCommand(id);
         await sender.Send(command);
         return Ok();
     }
@@ -120,8 +119,9 @@ public class AdminController(ISender sender) : Controller
 
     [AuthorizeRole(Role.Author)]
     [HttpPost("tags/create")]
-    public async Task<IActionResult> CreateTag(CreateTagCommand command)
+    public async Task<IActionResult> CreateTag(CreateOrUpdateTagRequest request)
     {
+        var command = request.ToCreateCommand();
         await sender.Send(command);
 
         return StatusCode(StatusCodes.Status201Created);
@@ -142,9 +142,10 @@ public class AdminController(ISender sender) : Controller
     }
 
     [AuthorizeRole(Role.Author)]
-    [HttpPost("tags/update")]
-    public async Task<IActionResult> UpdateTag(UpdateTagCommand command)
+    [HttpPost("tags/update/{id}")]
+    public async Task<IActionResult> UpdateTag([FromRoute] int id, [FromForm] CreateOrUpdateTagRequest request)
     {
+        var command = request.ToUpdateCommand(id);
         await sender.Send(command);
         return Ok();
     }
@@ -199,8 +200,9 @@ public class AdminController(ISender sender) : Controller
 
     [AuthorizeRole(Role.Author)]
     [HttpPost("posts/create")]
-    public async Task<IActionResult> CreatePost([FromForm] CreatePostCommand command)
+    public async Task<IActionResult> CreatePost(CreateOrUpdatePostRequest request)
     {
+        var command = request.ToCreateCommand();
         await sender.Send(command);
         return StatusCode(StatusCodes.Status201Created);
     }
@@ -228,9 +230,10 @@ public class AdminController(ISender sender) : Controller
     }
 
     [AuthorizeRole(Role.Author)]
-    [HttpPost("posts/update")]
-    public async Task<IActionResult> UpdatePost([FromForm] UpdatePostCommand command)
+    [HttpPost("posts/update/{id}")]
+    public async Task<IActionResult> UpdatePost(int id, CreateOrUpdatePostRequest request)
     {
+        var command = request.ToUpdateCommand(id);
         await sender.Send(command);
         return Ok();
     }

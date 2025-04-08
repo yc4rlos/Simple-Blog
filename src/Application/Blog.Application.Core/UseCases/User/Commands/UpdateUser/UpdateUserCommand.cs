@@ -1,5 +1,5 @@
+using Blog.Application.Core.Common;
 using Blog.Domain.Enums;
-using Microsoft.AspNetCore.Http;
 
 namespace Blog.Application.Core.UseCases.User.Commands.UpdateUser;
 
@@ -9,7 +9,7 @@ public record UpdateUserCommand(
     string Email,
     string? About,
     string Login,
-    IFormFile? Image,
+    FileUpload? Image,
     Role Role) : IRequest;
 
 public static class UpdateUserCommandExtensions

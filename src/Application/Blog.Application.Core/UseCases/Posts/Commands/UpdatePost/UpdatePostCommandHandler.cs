@@ -23,8 +23,8 @@ internal class UpdatePostCommandHandler(
         if (command.Image != null)
         {
             await fileService.DeleteFileAsync(postEntity.ImageFileName, cancellationToken);
-            await using var stream = command.Image.OpenReadStream();
-            postEntity.ImageFileName = await fileService.AddFileAsync(command.Image.FileName, stream);
+            postEntity.ImageFileName = await fileService.AddFileAsync(command.Image.FileName, command.Image.Content);
+            await command.Image.Content.DisposeAsync();
         }
 
         var titleChanged = command.Title != postEntity.Title;

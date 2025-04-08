@@ -23,25 +23,20 @@
             <label for="image-input" class="form-label">
                 Image
             </label>
-            <input class="form-control" type="file" id="image-input"/>
+            <input class="form-control" type="file" id="image-input" />
             <small id="image-required-error" class="text-danger d-none">Image is required</small>
         </div>
         <div id="image-preview" class="col-6">
             @if (Model.User?.ImageFileName != null)
             {
-                <img alt="User image"
-                     class="img-thumbnail"
-                     src="@Url.ActionLink("Index", "File")/@Model.User.ImageFileName"/>
+                <img alt="User image" class="img-thumbnail"
+                    src="@Url.ActionLink("Index", "File")/@Model.User.ImageFileName" />
             }
         </div>
     </div>
     <div class="mb-3">
         <label for="name-input" class="form-label"> Name <span class="text-danger">*</span></label>
-        <input id="name-input"
-               class="form-control"
-               required
-               placeholder="Type the name"
-               value="@Model.User?.Name"/>
+        <input id="name-input" class="form-control" required placeholder="Type the name" value="@Model.User?.Name" />
         <small id="name-required-error" class="text-danger d-none">Name is required</small>
     </div>
     <label for="role-select" class="form-label">Role <span class="text-danger">*</span></label>
@@ -71,11 +66,8 @@
                 Login
                 <span class="text-danger">*</span>
             </label>
-            <input id="login-input"
-                   class="form-control"
-                   required
-                   placeholder="Type the login"
-                   value="@Model.User?.Login"/>
+            <input id="login-input" class="form-control" required placeholder="Type the login"
+                value="@Model.User?.Login" />
             <small id="login-required-error" class="text-danger d-none">Email is required</small>
         </div>
         <div class="col ">
@@ -83,11 +75,8 @@
                 Email
                 <span class="text-danger">*</span>
             </label>
-            <input id="email-input"
-                   class="form-control"
-                   required
-                   placeholder="Type the email"
-                   value="@Model.User?.Email"/>
+            <input id="email-input" class="form-control" required placeholder="Type the email"
+                value="@Model.User?.Email" />
             <small id="email-required-error" class="text-danger d-none">Email is required</small>
         </div>
     </div>
@@ -182,10 +171,6 @@
 
             const formData = new FormData();
 
-            if (!isCreating) {
-                formData.append('id', @Model.User?.Id);
-            }
-
             formData.append('name', document.getElementById('name-input').value);
             formData.append('email', document.getElementById('email-input').value);
             formData.append('login', document.getElementById('login-input').value);
@@ -244,4 +229,3 @@
         //#endregion
     </script>
 }
-

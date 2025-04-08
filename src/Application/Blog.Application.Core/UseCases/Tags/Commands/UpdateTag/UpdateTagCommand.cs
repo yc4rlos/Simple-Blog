@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Http;
+using Blog.Application.Core.Common;
 
 namespace Blog.Application.Core.UseCases.Tags.Commands.UpdateTag;
 
-public record UpdateTagCommand(int Id, string Name, IFormFile? Image) : IRequest;
+public record UpdateTagCommand(int Id, string Name, FileUpload? Image) : IRequest;

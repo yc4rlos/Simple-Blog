@@ -24,8 +24,8 @@ internal class CreateUserCommandHandler(
 
         if (command.Image != null)
         {
-            var stream = command.Image.OpenReadStream();
-            var imageName = await fileService.AddFileAsync(command.Image.Name, stream);
+            var imageName = await fileService.AddFileAsync(command.Image.FileName, command.Image.Content);
+            await command.Image.Content.DisposeAsync();
             user.ImageFileName = imageName;
         }
 

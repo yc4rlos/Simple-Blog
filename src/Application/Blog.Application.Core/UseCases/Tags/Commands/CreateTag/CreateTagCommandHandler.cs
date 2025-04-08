@@ -15,8 +15,8 @@ internal class CreateTagCommandHandler(
     public async Task Handle(CreateTagCommand command, CancellationToken cancellationToken)
     {
         // Image
-        await using var stream = command.Image.OpenReadStream();
-        var imageName = await fileService.AddFileAsync(command.Image.Name, stream);
+        var imageName = await fileService.AddFileAsync(command.Image.FileName, command.Image.Content);
+        await command.Image.Content.DisposeAsync();
 
         var tag = new Tag
         {

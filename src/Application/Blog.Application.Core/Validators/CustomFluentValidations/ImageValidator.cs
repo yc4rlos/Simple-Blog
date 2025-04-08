@@ -1,15 +1,15 @@
+using Blog.Application.Core.Common;
 using FluentValidation;
 using FluentValidation.Validators;
-using Microsoft.AspNetCore.Http;
 
 namespace Blog.Application.Core.Validators.CustomFluentValidations;
 
-public class ImageValidator<T> : PropertyValidator<T, IFormFile?>
+public class ImageValidator<T> : PropertyValidator<T, FileUpload?>
 {
     public override string Name => "ImageValidator";
-    private readonly string[] _fileTypes = [".jpg", ".jpeg", ".png", ".gif", ".bmp"];
+    private readonly string[] _fileTypes = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
 
-    public override bool IsValid(ValidationContext<T> context, IFormFile? value)
+    public override bool IsValid(ValidationContext<T> context, FileUpload? value)
     {
         if (value == null)
             return true;

@@ -18,8 +18,8 @@ internal class CreatePostCommandHandler(
         var postEntity = command.ToEntity();
 
         // Image
-        await using var stream = command.Image.OpenReadStream();
-        postEntity.ImageFileName = await fileService.AddFileAsync(command.Image.FileName, stream);
+        postEntity.ImageFileName = await fileService.AddFileAsync(command.Image.FileName, command.Image.Content);
+        await command.Image.Content.DisposeAsync();
 
         // Check Slug
         var slugAlreadyRegistered = await slugRepository.ExistsAsync(postEntity, cancellationToken);
